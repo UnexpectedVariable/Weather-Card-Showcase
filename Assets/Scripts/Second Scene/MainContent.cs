@@ -17,11 +17,16 @@ namespace Assets.Scripts.Second_Scene
         private Button _closeButton = null;
         [SerializeField]
         private Button _settingsButton = null;
+        [SerializeField]
+        private Button _resetButton = null;
 
         [SerializeField]
         private HorizontalScrollView _horizontalScrollView = null;
         [SerializeField]
         private WeatherCardGrid _weatherCardGrid = null;
+
+        [SerializeField]
+        private AudioSource _clickSFX = null;
 
         private void Start()
         {
@@ -42,10 +47,20 @@ namespace Assets.Scripts.Second_Scene
         {
             var buttons = GetComponentsInChildren<Button>();
 
+            foreach (var button in buttons)
+            {
+                button.onClick.AddListener(() =>
+                {
+                    _clickSFX.Play();
+                });
+            }
+
             if (_closeButton == null) _closeButton = Array.Find(buttons,
                 (button) => button.name == "CloseButton");
             if (_settingsButton == null) _settingsButton = Array.Find(buttons,
                 (button) => button.name == "SettingsButton");
+            if (_resetButton == null) _resetButton = Array.Find(buttons,
+                (button) => button.name == "ResetButton");
 
             _closeButton.onClick.AddListener(() =>
             {
@@ -54,6 +69,10 @@ namespace Assets.Scripts.Second_Scene
             _settingsButton.onClick.AddListener(() =>
             {
                 _settingsContainer.SetActive(true);
+            });
+            _resetButton.onClick.AddListener(() =>
+            {
+                _weatherCardGrid.Reset();
             });
         }
     }

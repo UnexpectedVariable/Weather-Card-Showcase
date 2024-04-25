@@ -1,0 +1,47 @@
+[
+{
+  "Location": "Kyiv",
+  "Active": false,
+  "Favored": true
+},
+{
+  "Location": "",
+  "Active": true,
+  "Favored": false
+},
+{
+  "Location": "",
+  "Active": true,
+  "Favored": false
+},
+{
+  "Location": "",
+  "Active": true,
+  "Favored": false
+},
+{
+  "Location": "",
+  "Active": true,
+  "Favored": false
+},
+{
+  "Location": "",
+  "Active": true,
+  "Favored": false
+},
+{
+  "Location": "",
+  "Active": true,
+  "Favored": false
+},
+{
+  "Location": "",
+  "Active": true,
+  "Favored": false
+},
+{
+  "Location": "",
+  "Active": true,
+  "Favored": false
+}
+]

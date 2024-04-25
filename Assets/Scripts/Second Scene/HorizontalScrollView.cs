@@ -88,6 +88,7 @@ namespace Assets.Scripts.Second_Scene
                 if (!card.Contains(_chosenCards[i].card)) continue;
                 card.Detach(_chosenCards[i].card);
                 _chosenCards[i].initialized = false;
+                _chosenCards[i].card.Reset();
                 break;
             }
         }

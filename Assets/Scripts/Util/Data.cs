@@ -9,6 +9,8 @@ namespace Assets.Scripts.Util
 {
     internal static class Data
     {
-        public static Color FavoriteColor = Color.Yellow;
+        public static readonly string DEFAULT_SAVE_URI = "Assets/Resources/Saves/";
+        public static readonly string DEFAULT_WEATHER_URI = "Images/01d@2x";
+        public static readonly string LINKEDIN_URL = "https://www.linkedin.com/in/rpa-softwareenginner/";
     }
 }

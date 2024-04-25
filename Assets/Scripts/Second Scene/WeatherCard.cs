@@ -1,4 +1,6 @@
 ﻿using Assets.Scripts.OpenWeather;
+using Assets.Scripts.Util;
+using Assets.Scripts.Util.JSON;
 using Assets.Scripts.Util.Observer;
 using System;
 using System.Collections;
@@ -7,14 +9,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static Assets.Scripts.Second_Scene.WeatherCard;
+using static Unity.VisualScripting.Member;
 using static UnityEngine.UI.Button;
 using static UnityEngine.UI.Toggle;
 
 namespace Assets.Scripts.Second_Scene
 {
-    internal class WeatherCard : MonoBehaviour, IObserved<WeatherCard>, Util.Observer.IObserver<WeatherCard>
+    internal class WeatherCard : MonoBehaviour, IObserved<WeatherCard>, Util.Observer.IObserver<WeatherCard>, ISerializable<SerializableWeatherCard>
     {
         protected List<Util.Observer.IObserver<WeatherCard>> _observers = new();
 
@@ -33,6 +38,7 @@ namespace Assets.Scripts.Second_Scene
 
         public string Location => _location.text;
         public string Temperature => _temperature.text;
+        public bool Favored => _observers.Count > 0;
         public Sprite Icon => _weatherIcon.sprite;
 
         public Toggle FavoriteToggle => _favoriteToggle;
@@ -101,9 +107,17 @@ namespace Assets.Scripts.Second_Scene
             _weatherIcon.sprite = source.Icon;
         }
 
+        public void Copy(SerializableWeatherCard source)
+        {
+            _location.text = source.Location;
+            _location.onSubmit.Invoke(source.Location);
+            _favoriteToggle.onValueChanged.Invoke(source.Favored);
+            gameObject.SetActive(source.Active);
+        }
+
         public void ValidateChosenIcon()
         {
-            if(_observers.Count == 0)
+            if(!Favored)
             {
                 _favoriteToggle.graphic.gameObject.SetActive(false);
             }
@@ -111,6 +125,20 @@ namespace Assets.Scripts.Second_Scene
             {
                 _favoriteToggle.graphic.gameObject.SetActive(true);
             }
+        }
+
+        public void Reset()
+        {
+            _location.text = string.Empty;
+            _temperature.text = "0";
+            _weatherIcon.sprite = Resources.Load<Sprite>(Data.DEFAULT_WEATHER_URI);
+            _favoriteToggle?.onValueChanged.Invoke(false);
+            gameObject.SetActive(true);
+        }
+
+        private void OnDisable()
+        {
+            _favoriteToggle?.onValueChanged.Invoke(false);
         }
 
         #region Observer
@@ -155,6 +183,28 @@ namespace Assets.Scripts.Second_Scene
         public void Handle(WeatherCard observed)
         {
             Copy(observed);
+        }
+        #endregion
+
+        #region Serialization
+        public SerializableWeatherCard Serialize()
+        {
+            return new SerializableWeatherCard(this);
+        }
+
+        public class SerializableWeatherCard : ISerialization
+        {
+            public string Location;
+            public bool Active;
+            public bool Favored;
+
+            public SerializableWeatherCard() { }
+            public SerializableWeatherCard(WeatherCard weatherCard)
+            {
+                Location = weatherCard.Location;
+                Active = weatherCard.isActiveAndEnabled;
+                Favored = weatherCard.Favored;
+            }
         }
         #endregion
     }
