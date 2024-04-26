@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Scripts.Util.JSON
+namespace Assets.Scripts.Util
 {
-    internal interface ISerialization
+    internal interface IInitializable
     {
-        string ToJson();
+        void Initialize();
+        bool IsInitialized { get; }
     }
 }

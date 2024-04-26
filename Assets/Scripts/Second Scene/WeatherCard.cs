@@ -19,7 +19,7 @@ using static UnityEngine.UI.Toggle;
 
 namespace Assets.Scripts.Second_Scene
 {
-    internal class WeatherCard : MonoBehaviour, IObserved<WeatherCard>, Util.Observer.IObserver<WeatherCard>, ISerializable<SerializableWeatherCard>
+    internal partial class WeatherCard : MonoBehaviour, IObserved<WeatherCard>, Util.Observer.IObserver<WeatherCard>, ISerializable<SerializableWeatherCard>
     {
         protected List<Util.Observer.IObserver<WeatherCard>> _observers = new();
 
@@ -190,21 +190,6 @@ namespace Assets.Scripts.Second_Scene
         public SerializableWeatherCard Serialize()
         {
             return new SerializableWeatherCard(this);
-        }
-
-        public class SerializableWeatherCard : ISerialization
-        {
-            public string Location;
-            public bool Active;
-            public bool Favored;
-
-            public SerializableWeatherCard() { }
-            public SerializableWeatherCard(WeatherCard weatherCard)
-            {
-                Location = weatherCard.Location;
-                Active = weatherCard.isActiveAndEnabled;
-                Favored = weatherCard.Favored;
-            }
         }
         #endregion
     }

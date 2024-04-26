@@ -37,28 +37,25 @@ namespace Assets.Scripts.Second_Scene
         }
 
         [ContextMenu("Serialize")]
-        public async void Serialize()
+        public string Serialize()
         {
             StringBuilder json = new StringBuilder();
             json.AppendLine("[");
             string[] cardJsons = new string[_weatherCards.Length];
             for(int i = 0; i < _weatherCards.Length; i++)
             {
-                cardJsons[i] = JsonConvert.SerializeObject(_weatherCards[i].Serialize(), Formatting.Indented);
+                cardJsons[i] = _weatherCards[i]
+                    .Serialize()
+                    .ToJson();
             }
             json.AppendJoin(",\n", cardJsons);
-            json.AppendLine("\n]");
-            Debug.Log(json.ToString());
-            await SaveService.SaveAsync(json.ToString());
+            json.Append("\n]");
+            return json.ToString();
         }
 
         [ContextMenu("Deserialize")]
-        public async void Deserialize()
+        public async void Deserialize(string json)
         {
-            var task = SaveService.LoadAsync();
-            if(task == null) return;
-
-            var json = await task;
             var s_Cards = JsonConvert.DeserializeObject<SerializableWeatherCard[]>(json);
             var zippedCards = _weatherCards.Zip(s_Cards, (m_card, s_card) => (m_card, s_card));
             foreach(var pair in zippedCards)

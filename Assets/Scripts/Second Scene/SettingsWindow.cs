@@ -1,4 +1,6 @@
 ﻿using Assets.Scripts.SecondScene;
+using Assets.Scripts.Util;
+using Assets.Scripts.Util.JSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +12,7 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.Second_Scene
 {
-    internal class SettingsWindow : MonoBehaviour
+    internal class SettingsWindow : MonoBehaviour, ISerializable<SerializableSettingsWindow>, IInitializable
     {
         [SerializeField]
         private GameObject _modalWindow = null;
@@ -33,20 +35,28 @@ namespace Assets.Scripts.Second_Scene
         [SerializeField]
         private AudioSource _clickSFXAudioSource = null;
 
+        public bool IsMusicOn => _musicToggle.isOn;
+        public bool IsSFXOn => _sfxToggle.isOn;
+        public float MusicVolume => _musicVolumeSlider.value;
+
+        public bool IsInitialized
+        {
+            get;
+            private set;
+        }
+
         private void Start()
         {
-            InitializeButtons();
-            InitializeToggles();
-            InitiazlieSliders();
+            Initialize();
         }
 
         private void InitiazlieSliders()
         {
             if (_musicVolumeSlider == null) _musicVolumeSlider = GetComponentInChildren<Slider>();
 
-            _musicVolumeSlider.onValueChanged.AddListener((value) =>
+            _musicVolumeSlider.onValueChanged.AddListener(async (value) =>
             {
-                StartCoroutine(TransitionSound(value * 0.01f));
+                await TransitionSound(value * 0.01f);
             });
         }
 
@@ -89,16 +99,37 @@ namespace Assets.Scripts.Second_Scene
             });
         }
 
-        private IEnumerator TransitionSound(float target)
+        private async Task TransitionSound(float target)
         {
             float delta = 0.01f;
             float lerp = 0.1f;
             while (Math.Abs(_bgMusicAudioSource.volume - target) > delta)
             {
                 _bgMusicAudioSource.volume = Mathf.Lerp(_bgMusicAudioSource.volume, target, lerp);
-                yield return new WaitForSeconds(delta);
+                await Task.Delay(TimeSpan.FromSeconds(delta));
             }
             _bgMusicAudioSource.volume = target;
+        }
+
+        public void Copy(SerializableSettingsWindow source)
+        {
+            _musicToggle.isOn = source.IsMusicOn;
+            _sfxToggle.isOn = source.IsSFXOn;
+            _musicVolumeSlider.value = source.MusicVolume;
+        }
+
+        public SerializableSettingsWindow Serialize()
+        {
+            return new SerializableSettingsWindow(this);
+        }
+
+        public void Initialize()
+        {
+            if (IsInitialized) return;
+
+            InitializeButtons();
+            InitializeToggles();
+            InitiazlieSliders();
         }
     }
 }

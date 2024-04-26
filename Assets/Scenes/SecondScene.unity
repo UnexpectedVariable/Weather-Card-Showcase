@@ -1442,7 +1442,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 256
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -7165,6 +7165,7 @@ MonoBehaviour:
   _resetButton: {fileID: 0}
   _horizontalScrollView: {fileID: 0}
   _weatherCardGrid: {fileID: 0}
+  _clickSFX: {fileID: 1177405646}
 --- !u!1 &810741787
 GameObject:
   m_ObjectHideFlags: 0
@@ -11682,7 +11683,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 0
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -18001,8 +18002,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _modalWindow: {fileID: 1952607681}
+  _musicToggle: {fileID: 0}
+  _sfxToggle: {fileID: 0}
+  _musicVolumeSlider: {fileID: 0}
   _closeButton: {fileID: 0}
   _infoButton: {fileID: 0}
+  _bgMusicAudioSource: {fileID: 200708134}
+  _clickSFXAudioSource: {fileID: 1177405646}
 --- !u!1 &1914735425
 GameObject:
   m_ObjectHideFlags: 0
@@ -18510,13 +18516,14 @@ GameObject:
   m_Component:
   - component: {fileID: 1952607682}
   - component: {fileID: 1952607683}
+  - component: {fileID: 1952607684}
   m_Layer: 5
   m_Name: Modal Window
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1952607682
 RectTransform:
   m_ObjectHideFlags: 0
@@ -18553,6 +18560,19 @@ MonoBehaviour:
   _closeButton: {fileID: 0}
   _linkButton: {fileID: 0}
   _container: {fileID: 0}
+  _group: {fileID: 0}
+--- !u!225 &1952607684
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1952607681}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1955676230
 GameObject:
   m_ObjectHideFlags: 0
@@ -19566,7 +19586,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 100
-  m_WholeNumbers: 1
+  m_WholeNumbers: 0
   m_Value: 100
   m_OnValueChanged:
     m_PersistentCalls:
@@ -20474,10 +20494,10 @@ RectTransform:
   - {fileID: 6503160033446327383}
   m_Father: {fileID: 4079712287878072890}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 310, y: -389.35474}
-  m_SizeDelta: {x: 600, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2181426609359270509
 MonoBehaviour:
@@ -20637,10 +20657,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4079712287878072890}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 310, y: -236.53217}
-  m_SizeDelta: {x: 600, y: 99.73108}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 99.73108}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &4079712287878072890
 RectTransform:
@@ -21156,10 +21176,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4079712287878072890}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 310, y: -83.844055}
-  m_SizeDelta: {x: 600, y: 99.73108}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 99.73108}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &8822908550386785905
 RectTransform:
