@@ -31,7 +31,7 @@ namespace Assets.Scripts.Util
                     return await reader.ReadToEndAsync();
                 }
             }
-            catch(FileNotFoundException e)
+            catch(FileNotFoundException)
             {
                 return null;
             }

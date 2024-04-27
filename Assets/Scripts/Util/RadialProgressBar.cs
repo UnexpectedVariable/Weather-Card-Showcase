@@ -17,5 +17,10 @@ namespace Assets.Scripts.Util
         {
             if(_image == null) _image = GetComponent<Image>();
         }
+
+        public void SetFill(float value)
+        {
+            _image.fillAmount = value;
+        }
     }
 }

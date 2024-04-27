@@ -18,5 +18,17 @@ namespace Assets.Scripts.Util
             SizeDelta = rectTransform.sizeDelta;
             Position = rectTransform.position;
         }
+
+        public void Copy(RectTransform source)
+        {
+            SizeDelta = source.sizeDelta;
+            Position = source.position;
+        }
+
+        public void Copy(s_RectTransform source)
+        {
+            SizeDelta = source.SizeDelta;
+            Position = source.Position;
+        }
     }
 }

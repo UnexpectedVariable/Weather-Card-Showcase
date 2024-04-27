@@ -2,17 +2,7 @@
 "WeatherCards":
 [
 {
-  "Location": "Kyiv",
-  "Active": true,
-  "Favored": true
-},
-{
   "Location": "",
-  "Active": true,
-  "Favored": false
-},
-{
-  "Location": "Dnepr",
   "Active": true,
   "Favored": false
 },
@@ -23,7 +13,7 @@
 },
 {
   "Location": "",
-  "Active": false,
+  "Active": true,
   "Favored": false
 },
 {
@@ -42,15 +32,25 @@
   "Favored": false
 },
 {
-  "Location": "Kharkiv",
+  "Location": "",
   "Active": true,
-  "Favored": true
+  "Favored": false
+},
+{
+  "Location": "",
+  "Active": true,
+  "Favored": false
+},
+{
+  "Location": "",
+  "Active": true,
+  "Favored": false
 }
 ],
 "Settings":
 {
-  "IsMusicOn": false,
-  "IsSFXOn": false,
-  "MusicVolume": 27.3495731
+  "IsMusicOn": true,
+  "IsSFXOn": true,
+  "MusicVolume": 100
 }
 }

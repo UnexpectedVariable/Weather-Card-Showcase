@@ -20,7 +20,7 @@ namespace Assets.Scripts.Second_Scene
         public event EventHandler<WeatherCard> CardFavored = null;
         public event EventHandler<WeatherCard> CardUnfavored = null;
 
-        private void Start()
+        private void Awake()
         {
             if (_weatherCards.Length == 0) _weatherCards = GetComponentsInChildren<WeatherCard>(true);
 
@@ -54,13 +54,21 @@ namespace Assets.Scripts.Second_Scene
         }
 
         [ContextMenu("Deserialize")]
-        public async void Deserialize(string json)
+        public void Deserialize(string json)
         {
             var s_Cards = JsonConvert.DeserializeObject<SerializableWeatherCard[]>(json);
             var zippedCards = _weatherCards.Zip(s_Cards, (m_card, s_card) => (m_card, s_card));
             foreach(var pair in zippedCards)
             {
                 pair.m_card.Copy(pair.s_card);
+            }
+        }
+
+        public void AttachSaveObserver(Util.Observer.IObserver<WeatherCard> observer)
+        {
+            foreach(var card in _weatherCards)
+            {
+                card.AttachSaveObserver(observer);
             }
         }
 

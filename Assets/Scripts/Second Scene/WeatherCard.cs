@@ -19,9 +19,11 @@ using static UnityEngine.UI.Toggle;
 
 namespace Assets.Scripts.Second_Scene
 {
-    internal partial class WeatherCard : MonoBehaviour, IObserved<WeatherCard>, Util.Observer.IObserver<WeatherCard>, ISerializable<SerializableWeatherCard>
+    internal partial class WeatherCard : MonoBehaviour, Util.Observer.IObserver<WeatherCard>, ISerializable<SerializableWeatherCard>
     {
-        protected List<Util.Observer.IObserver<WeatherCard>> _observers = new();
+        private List<Util.Observer.IObserver<WeatherCard>> _cardObservers = new();
+        private List<Util.Observer.IObserver<WeatherCard>> _saveObservers = new();
+
 
         [SerializeField]
         private Button _closeButton = null;
@@ -32,14 +34,21 @@ namespace Assets.Scripts.Second_Scene
         [SerializeField]
         private Image _weatherIcon = null;
         [SerializeField]
+        private Image _background = null;
+        [SerializeField]
         private TextMeshProUGUI _temperature = null;
 
         private Client _weatherClient = null;
 
         public string Location => _location.text;
         public string Temperature => _temperature.text;
-        public bool Favored => _observers.Count > 0;
+        public bool Favored => _cardObservers.Count > 0;
         public Sprite Icon => _weatherIcon.sprite;
+        public Color BackgroundColor
+        {
+            get => _background.color;
+            set => _background.color = value;
+        }
 
         public Toggle FavoriteToggle => _favoriteToggle;
 
@@ -47,6 +56,7 @@ namespace Assets.Scripts.Second_Scene
         {
             InitializeButtons();
             if (_favoriteToggle == null) _favoriteToggle = GetComponentInChildren<Toggle>();
+            if (_background == null) _background = GetComponent<Image>();
             InitializeForecastLogic();
         }
 
@@ -64,7 +74,7 @@ namespace Assets.Scripts.Second_Scene
 
         private void InitializeButtons()
         {
-            var buttons = GetComponentsInChildren<Button>();
+            var buttons = GetComponentsInChildren<Button>(true);
 
             if (_closeButton == null) _closeButton = Array.Find(buttons,
                 (button) => button.name == "CloseButton");
@@ -134,6 +144,7 @@ namespace Assets.Scripts.Second_Scene
             _weatherIcon.sprite = Resources.Load<Sprite>(Data.DEFAULT_WEATHER_URI);
             _favoriteToggle?.onValueChanged.Invoke(false);
             gameObject.SetActive(true);
+            Notify();
         }
 
         private void OnDisable()
@@ -142,41 +153,51 @@ namespace Assets.Scripts.Second_Scene
         }
 
         #region Observer
-        public void Attach(Util.Observer.IObserver<WeatherCard> observer)
+        public void AttachCardObserver(Util.Observer.IObserver<WeatherCard> observer)
         {
-            _observers.Add(observer);
-
+            _cardObservers.Add(observer);
             _favoriteToggle.SetIsOnWithoutNotify(true);
+            Notify();
         }
 
-        public void Attach(ICollection<Util.Observer.IObserver<WeatherCard>> observers)
+        public void AttachSaveObserver(Util.Observer.IObserver<WeatherCard> observer)
         {
-            throw new NotImplementedException();
+            _saveObservers.Add(observer);
         }
 
-        public void Detach(Util.Observer.IObserver<WeatherCard> observer)
+        public void DetachCardObserver(Util.Observer.IObserver<WeatherCard> observer)
         {
-            _observers.Remove(observer);
-
+            _cardObservers.Remove(observer);
             _favoriteToggle.SetIsOnWithoutNotify(false);
+            Notify();
         }
 
-        public void Detach(ICollection<Util.Observer.IObserver<WeatherCard>> observers)
+        public void DetachSaveObserver(Util.Observer.IObserver<WeatherCard> observer)
         {
-            throw new NotImplementedException();
+            _saveObservers.Remove(observer);
         }
 
         public void Notify()
         {
-            foreach(var observer in _observers)
+            foreach (var observer in _cardObservers)
+            {
+                observer.Handle(this);
+            }
+            foreach (var observer in _saveObservers)
             {
                 observer.Handle(this);
             }
         }
 
-        public bool Contains(Util.Observer.IObserver<WeatherCard> observer)
+        public bool ContainsCardObserver(Util.Observer.IObserver<WeatherCard> observer)
         {
-            if (_observers.Contains(observer)) return true;
+            if (_cardObservers.Contains(observer)) return true;
+            return false;
+        }
+
+        public bool ContainsSaveObserver(Util.Observer.IObserver<WeatherCard> observer)
+        {
+            if (_saveObservers.Contains(observer)) return true;
             return false;
         }
 

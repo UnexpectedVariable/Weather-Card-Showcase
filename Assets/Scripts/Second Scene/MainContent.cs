@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using static Assets.Scripts.Second_Scene.SettingsWindow;
 using static Assets.Scripts.Second_Scene.WeatherCard;
 
 namespace Assets.Scripts.Second_Scene
@@ -31,10 +32,20 @@ namespace Assets.Scripts.Second_Scene
         [SerializeField]
         private AudioSource _clickSFX = null;
 
+        [SerializeField]
+        private SaveManager _saveManager = null;
+
         private void Start()
         {
+            InitializeSaveSystem();
             InitializeButtons();
             InitializeViews();
+        }
+
+        private void InitializeSaveSystem()
+        {
+            if (_saveManager == null) _saveManager = GameObject.FindWithTag("SceneSaveManager").GetComponent<SaveManager>();
+            _saveManager.OnSave += (sender, args) => Serialize();
         }
 
         private void InitializeViews()
@@ -45,8 +56,18 @@ namespace Assets.Scripts.Second_Scene
 
             _weatherCardGrid.CardFavored += _horizontalScrollView.OnCardFavored;
             _weatherCardGrid.CardUnfavored += _horizontalScrollView.OnCardUnfavored;
+            _weatherCardGrid.AttachSaveObserver(_saveManager);
 
             _settingsView.Initialize();
+            _settingsView.OnEnabled += (sender, args) =>
+            {
+                _horizontalScrollView.ToggleSwipe();
+            };
+            _settingsView.OnDisabled += (sender, args) =>
+            {
+                _horizontalScrollView.ToggleSwipe();
+            };
+            _settingsView.AttachSaveObserver(_saveManager);
         }
 
         private void InitializeButtons()
@@ -83,7 +104,7 @@ namespace Assets.Scripts.Second_Scene
         }
 
         [ContextMenu("Serialize")]
-        public async void Serialize()
+        private async void Serialize()
         {
             string weatherJson = _weatherCardGrid.Serialize();
             StringBuilder json = new StringBuilder();
@@ -96,7 +117,7 @@ namespace Assets.Scripts.Second_Scene
         }
 
         [ContextMenu("Deserialize")]
-        public async void Deserialize()
+        private async void Deserialize()
         {
             var task = SaveService.LoadAsync();
             if (task == null) return;
@@ -107,6 +128,11 @@ namespace Assets.Scripts.Second_Scene
             _weatherCardGrid.Deserialize(dict["WeatherCards"].ToString());
             var settingsSerialization = JsonConvert.DeserializeObject<SerializableSettingsWindow>(dict["Settings"].ToString());
             _settingsView.Copy(settingsSerialization);
+        }
+
+        private void OnEnable()
+        {
+            Deserialize();
         }
     }
 }

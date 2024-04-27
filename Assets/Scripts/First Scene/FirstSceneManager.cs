@@ -18,8 +18,27 @@ namespace Assets.Scripts.FirstScene
         {
             _loadSceneButton.onClick.AddListener(() => 
             {
-                AsyncOperation loadSceneAsync = SceneManager.LoadSceneAsync("SecondScene");
+                StartCoroutine(LoadSceneCoroutine());
+                _loadSceneButton.gameObject.SetActive(false);
             });
+        }
+
+        IEnumerator LoadSceneCoroutine()
+        {
+            AsyncOperation loadSceneAsync = SceneManager.LoadSceneAsync("SecondScene");
+            loadSceneAsync.allowSceneActivation = false;
+
+            while (!loadSceneAsync.isDone)
+            {
+                _radialProgressBar.SetFill(loadSceneAsync.progress);
+                if(loadSceneAsync.progress >= 0.9f)
+                {
+                    _radialProgressBar.SetFill(1f);
+                    yield return new WaitForFixedUpdate();
+                    loadSceneAsync.allowSceneActivation = true;
+                }
+                yield return null;
+            }
         }
     }
 }

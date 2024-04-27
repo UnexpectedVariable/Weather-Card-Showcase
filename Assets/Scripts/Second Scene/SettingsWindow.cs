@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.SecondScene;
 using Assets.Scripts.Util;
 using Assets.Scripts.Util.JSON;
+using Assets.Scripts.Util.Observer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,11 +10,14 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using static Assets.Scripts.Second_Scene.SettingsWindow;
 
 namespace Assets.Scripts.Second_Scene
 {
-    internal class SettingsWindow : MonoBehaviour, ISerializable<SerializableSettingsWindow>, IInitializable
+    internal partial class SettingsWindow : MonoBehaviour, ISerializable<SerializableSettingsWindow>, IInitializable
     {
+        private List<Util.Observer.IObserver<SettingsWindow>> _saveObservers = new();
+
         [SerializeField]
         private GameObject _modalWindow = null;
 
@@ -45,6 +49,9 @@ namespace Assets.Scripts.Second_Scene
             private set;
         }
 
+        public event EventHandler OnEnabled = null;
+        public event EventHandler OnDisabled = null;
+
         private void Start()
         {
             Initialize();
@@ -57,6 +64,7 @@ namespace Assets.Scripts.Second_Scene
             _musicVolumeSlider.onValueChanged.AddListener(async (value) =>
             {
                 await TransitionSound(value * 0.01f);
+                Notify();
             });
         }
 
@@ -72,10 +80,12 @@ namespace Assets.Scripts.Second_Scene
             _musicToggle.onValueChanged.AddListener((value) =>
             {
                 _bgMusicAudioSource.mute = !value;
+                Notify();
             });
             _sfxToggle.onValueChanged.AddListener((value) =>
             {
                 _clickSFXAudioSource.mute = !value;
+                Notify();
             });
         }
 
@@ -130,6 +140,34 @@ namespace Assets.Scripts.Second_Scene
             InitializeButtons();
             InitializeToggles();
             InitiazlieSliders();
+        }
+
+        public void AttachSaveObserver(Util.Observer.IObserver<SettingsWindow> observer)
+        {
+            _saveObservers.Add(observer);
+        }
+
+        public void DetachSaveObserver(Util.Observer.IObserver<SettingsWindow> observer)
+        {
+            _saveObservers.Remove(observer);
+        }
+
+        public void Notify()
+        {
+            foreach (var observer in _saveObservers)
+            {
+                observer.Handle(this);
+            }
+        }
+
+        private void OnEnable()
+        {
+            OnEnabled?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnDisable()
+        {
+            OnDisabled?.Invoke(this, EventArgs.Empty);
         }
     }
 }

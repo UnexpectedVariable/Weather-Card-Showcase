@@ -5,7 +5,7 @@ namespace Assets.Scripts.Second_Scene
 {
     internal partial class WeatherCard
     {
-        public class SerializableWeatherCard : ISerialization
+        internal class SerializableWeatherCard : ISerialization
         {
             public string Location;
             public bool Active;
