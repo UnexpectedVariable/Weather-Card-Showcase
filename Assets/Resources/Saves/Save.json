@@ -2,7 +2,7 @@
 "WeatherCards":
 [
 {
-  "Location": "",
+  "Location": "Kyiv",
   "Active": true,
   "Favored": false
 },
@@ -51,6 +51,6 @@
 {
   "IsMusicOn": true,
   "IsSFXOn": true,
-  "MusicVolume": 100
+  "MusicVolume": 100.0
 }
 }
